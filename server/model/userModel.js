@@ -28,10 +28,18 @@ const AuthSchema = new mongoose.Schema({
                     /^(([^<>()[\]\.,;:\s@\"]+(\.[^<>()[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})$/i;
                 return value.match(re);
             }, 
-            message:"Please enter a vlid email address", 
+            message:"Please enter a valid email address", 
         }
     }, 
-    password:{
+    subscriptionActive:{
+        type:String, 
+        default: "",
+    },
+    salt:{
+        type: String, 
+        default: ""
+    },
+    hashPassword:{
         require: true, 
         type:String, 
         validate:{
@@ -47,7 +55,7 @@ const AuthSchema = new mongoose.Schema({
             message:"Your password not meeting requirement",
         }
     },
-    tokens: [
+    selectedAPIs: [
         {
             token: {
                 type: String,
@@ -61,19 +69,20 @@ const AuthSchema = new mongoose.Schema({
 });
 AuthSchema.methods.generateAuthtoken = async function () {
     try {
-        let token =await jwt.sign({ _id: this._id }, keysecret, {
+        let newtoken =await jwt.sign({ _id: this._id }, keysecret, {
             expiresIn: "1d"
         });
         console.log("token 23 working");
 
-        this.tokens =await this.tokens.concat({ token: token });
+        this.selectedAPIs =await this.selectedAPIs.concat({ token: newtoken });
         await this.save();
-        return token;
+        console.log("after generate gotkan");
+        return newtoken;
     } catch (error) {
         res.status(422).json(error)
     }
 }
 
-const UserModel = mongoose.model('users', AuthSchema);
+const UserModel = mongoose.model('User', AuthSchema);
 
 module.exports = UserModel;
