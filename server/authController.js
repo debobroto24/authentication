@@ -21,9 +21,7 @@ const keysecret = "jdheyuhgtresdfgvcbjhuioplkiuythg";
 var transporter = nodemailer.createTransport({
   service: 'gmail',
   auth: {
-    // user: "debobroto990@gmail.com",
     user: "neo21071999@gmail.com",
-    // pass: "eebvysejrxzizdes",
     pass: "gmojorsvsvzonxan",
   }
 });
